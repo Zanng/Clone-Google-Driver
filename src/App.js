@@ -1,23 +1,48 @@
-import logo from './logo.svg';
+import { useState } from 'react'
 import './App.css';
+import Header from './components/header'
+import Sidebar from './components/sidebar'
+import FilesView  from './components/filesView/FilesView'
+import SideIcons from  './components/sideicons'
+import {auth, provider} from './firebase'
+
+import GDriverLogo from './media/google-drive-logo.png'
 
 function App() {
+  const [user, setUer] = useState()
+  
+  const handleLogin=()=>{
+    if(!user){
+      auth.signInWithPopup(provider).then((reuslt =>{
+        setUer(reuslt.user)
+      }))
+    }
+  }
+  
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  //authentication
+    
+     <div className="App">
+       {
+      user ? (
+        <>
+          <Header userPhoto={user.photoURL} />
+          <div className="app__main">
+            <Sidebar />
+            <FilesView />
+            <SideIcons />
+          </div>  
+        </>
+      ) : (
+        <div className="app__login">
+          <img src={GDriverLogo} alt="DriverLogo"/>
+          <button onClick={handleLogin}>Log in To Google Driver </button>
+        </div>
+      )
+    }
+     
+      
     </div>
   );
 }
